@@ -7,18 +7,17 @@ Encore
     .setPublicPath('/build')
     .cleanupOutputBeforeBuild()
     .enableSourceMaps(!Encore.isProduction())
-    // uncomment to create hashed filenames (e.g. app.abc123.css)
-    // .enableVersioning(Encore.isProduction())
 
-    // uncomment to define the assets of the project
-    // .addEntry('js/app', './assets/js/app.js')
-    // .addStyleEntry('css/app', './assets/css/app.scss')
+    .enableVersioning(Encore.isProduction())
 
-    // uncomment if you use Sass/SCSS files
-    // .enableSassLoader()
+    .createSharedEntry('js/common', ['jquery', './assets/js/common.js'])
+    .addEntry('js/app', './assets/js/app.js')
 
-    // uncomment for legacy applications that require $/jQuery as a global variable
-    // .autoProvidejQuery()
+    .addStyleEntry('css/app', './assets/scss/app.scss')
+
+    .enableSassLoader()
+
+    .autoProvidejQuery()
 ;
 
 module.exports = Encore.getWebpackConfig();
