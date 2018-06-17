@@ -1,3 +1,15 @@
 
-// Bootstrap
 @import "~bootstrap/scss/bootstrap";
+@import "~font-awesome/scss/font-awesome";
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh
+}
+
+.body-container {
+  flex: 1;
+  /* needed to prevent pages with a very small height and browsers not supporting flex */
+  min-height: 600px
+}
