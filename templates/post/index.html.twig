@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Post{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('build/css/blog.css') }}">
+{% endblock %}
+
+{% block content %}
+        <section class="col-md-8">
+            {% for post in posts %}
+                <article class="card my-4">
+                    <img class="card-img-top" src="https://picsum.photos/750/300/?random" alt="Card image cap">
+                    <div class="card-body">
+                        <h2 class="card-title">{{ post.title }}</h2>
+                        <p class="card-text">{{ post.summary }}</p>
+                        <a href="{{ path('post_show', {slug: post.slug}) }}" class="btn btn-primary">Read More &rarr;</a>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <p class="post-meta">
+                            Posted on {{ post.publishedAt|localizeddate('long', 'medium', null, 'UTC', 'MMMM d, Y') }} by <a href="#">{{ post.author }}</a>
+                        </p>
+                    </div>
+                </article>
+            {% endfor %}
+
+            {% if posts.haveToPaginate %}
+                {{ pagerfanta(posts, 'twitter_bootstrap4_translated', {routeName: 'post_index_paginated'}) }}
+            {% endif %}
+        </section>
+{% endblock %}

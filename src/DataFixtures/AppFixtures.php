@@ -65,7 +65,7 @@ class AppFixtures extends Fixture
                 $this->faker->unique()->word . ' ' . $this->faker->words($this->faker->randomDigit, true),
                 $this->faker->unique()->slug,
                 $this->faker->text(255),
-                $this->faker->realText,
+                $this->faker->realText(1000),
                 '', // TODO image
                 $this->faker->dateTimeBetween('-6 months', 'now'),
                 $this->faker->userName, // TODO author

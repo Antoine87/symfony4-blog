@@ -15,6 +15,7 @@ Encore
 
     .addStyleEntry('css/app', './assets/scss/app.scss')
     .addStyleEntry('css/clean-blog', './assets/scss/startbootstrap/clean-blog.scss')
+    .addStyleEntry('css/blog', './assets/scss/startbootstrap/blog.scss')
 
     .enableSassLoader()
 

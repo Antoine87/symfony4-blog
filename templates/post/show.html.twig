@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Post{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('build/css/blog.css') }}">
+{% endblock %}
+
+{% block content %}
+    <article class="col-lg-8">
+        <h1 class="mt-4">Post Title</h1>
+        <p class="lead">by <a href="#">{{ post.author }}</a></p>
+        <hr>
+
+        <p>Posted on {{ post.publishedAt|localizeddate('long', 'medium', null, 'UTC') }} by <a href="#">{{ post.author }}</a></p>
+        <hr>
+
+        <img class="img-fluid rounded" src="https://picsum.photos/750/300/?random" alt="">
+        <hr>
+
+        <p class="lead">{{ post.summary }}</p>
+        <p>{{ post.content|raw }}</p>
+        <hr>
+    </article>
+{% endblock %}
