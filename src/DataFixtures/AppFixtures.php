@@ -3,10 +3,12 @@
 namespace App\DataFixtures;
 
 use App\Entity\Post;
-use Cocur\Slugify\Slugify;
+use App\Entity\User;
+use App\Utils\Arr;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {
@@ -16,26 +18,56 @@ class AppFixtures extends Fixture
     private $faker;
 
     /**
-     * @var \Cocur\Slugify\Slugify
+     * @var \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface
      */
-    private $slugify;
+    private $passwordEncoder;
+
+    /**
+     * @var User[]
+     */
+    private $users;
 
 
-    public function __construct()
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->faker = Factory::create();
-        $this->slugify = Slugify::create();
+        $this->passwordEncoder = $passwordEncoder;
     }
 
     public function load(ObjectManager $manager): void
     {
+        $this->loadUsers($manager);
         $this->loadPosts($manager);
+    }
+
+    private function loadUsers(ObjectManager $manager): void
+    {
+        foreach ($this->getUserData() as [
+            $firstname, $lastname, $login, $email, $password, $createdAt, $updatedAt, $deletedAt
+        ]) {
+            $user = new User();
+            $user->setFirstname($firstname);
+            $user->setLastname($lastname);
+            $user->setLogin($login);
+            $user->setEmail($email);
+            $user->setPassword($this->passwordEncoder->encodePassword($user, $password));
+            if (isset($createdAt, $updatedAt) && $this->faker->boolean(80)) {
+                $user->setCreatedAt($createdAt);
+                $user->setUpdatedAt($updatedAt);
+            }
+            $this->faker->boolean(10) && $user->setDeletedAt($deletedAt);
+
+            $manager->persist($user);
+            $this->addReference($login, $user);
+            $this->users[] = $user;
+        }
+        $manager->flush();
     }
 
     private function loadPosts(ObjectManager $manager): void
     {
         foreach ($this->getPostData() as [
-            $title, $slug, $summary, $content, $image, $publishedAt, $author, $createAt, $updatedAt, $deletedAt
+            $title, $slug, $summary, $content, $image, $publishedAt, $author, $createdAt, $updatedAt, $deletedAt
         ]) {
             $post = new Post();
             $post->setTitle($title);
@@ -45,8 +77,8 @@ class AppFixtures extends Fixture
             $post->setImage($image);
             $this->faker->boolean(80) && $post->setPublishedAt($publishedAt);
             $post->setAuthor($author);
-            if ($this->faker->boolean(80)) {
-                $post->setCreatedAt($createAt);
+            if (isset($createdAt, $updatedAt) && $this->faker->boolean(80)) {
+                $post->setCreatedAt($createdAt);
                 $post->setUpdatedAt($updatedAt);
             }
             $this->faker->boolean(10) && $post->setDeletedAt($deletedAt);
@@ -56,19 +88,50 @@ class AppFixtures extends Fixture
         $manager->flush();
     }
 
+    /**
+     * @return array[]
+     */
+    private function getUserData(): array
+    {
+        $users = [
+            // $firstname, $lastname, $login, $email, $password, $createdAt, $updatedAt, $deletedAt
+            [null, null, 'admin', 'admin@mail.com', 'secret', null, null, null],
+            ['Barack', 'Obama', 'b-obama', 'potus@washington.com', 'secret', null, null, null]
+        ];
+
+        foreach (range(1, 30) as $i) {
+            $users[] = [
+                $this->faker->firstName,
+                $this->faker->lastName,
+                $this->faker->unique()->word,
+                $this->faker->email,
+                $this->faker->password,
+                $this->faker->dateTimeBetween('-2 years', '-1 years'),
+                $this->faker->dateTimeBetween('-1 years', '-6 months'),
+                $this->faker->dateTimeBetween('-6 months', 'now')
+            ];
+        }
+        return $users;
+    }
+
+    /**
+     * @return array[]
+     */
     private function getPostData(): array
     {
-        $posts = [];
+        $posts = [
+            // $title, $slug, $summary, $content, $image, $publishedAt, $author, $createAt, $updatedAt, $deletedAt
+        ];
+
         foreach (range(1, 50) as $i) {
             $posts[] = [
-                // $title, $slug, $summary, $content, $image, $publishedAt, $author, $createAt, $updatedAt, $deletedAt
                 $this->faker->unique()->word . ' ' . $this->faker->words($this->faker->randomDigit, true),
                 $this->faker->unique()->slug,
                 $this->faker->text(255),
                 $this->faker->realText(1000),
                 '', // TODO image
                 $this->faker->dateTimeBetween('-6 months', 'now'),
-                $this->faker->userName, // TODO author
+                Arr::random($this->users),
                 $this->faker->dateTimeBetween('-2 years', '-1 years'),
                 $this->faker->dateTimeBetween('-1 years', '-6 months'),
                 $this->faker->dateTimeBetween('-6 months', 'now')

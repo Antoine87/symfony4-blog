@@ -19,7 +19,7 @@
                     </div>
                     <div class="card-footer text-muted">
                         <p class="post-meta">
-                            Posted on {{ post.publishedAt|localizeddate('long', 'medium', null, 'UTC', 'MMMM d, Y') }} by <a href="#">{{ post.author }}</a>
+                            Posted on {{ post.publishedAt|localizeddate('long', 'medium', null, 'UTC', 'MMMM d, Y') }} by <a href="#">{{ post.author.fullName }}</a>
                         </p>
                     </div>
                 </article>

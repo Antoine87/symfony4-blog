@@ -19,12 +19,12 @@ class PostRepository extends ServiceEntityRepository
 
     public function findLatest(int $postsPerPage, int $page = 1): Pagerfanta
     {
-        $queryBuilder = $this->createQueryBuilder('p')
+        $query = $this->createQueryBuilder('p')
             ->where('p.publishedAt <= :now')
             ->setParameter('now', new \DateTime())
             ->orderBy('p.publishedAt', 'DESC')
             ->getQuery();
 
-        return $this->createPaginator($queryBuilder, $postsPerPage, $page);
+        return $this->createPaginator($query, $postsPerPage, $page);
     }
 }

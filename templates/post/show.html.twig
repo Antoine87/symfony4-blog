@@ -10,10 +10,10 @@
 {% block content %}
     <article class="col-lg-8">
         <h1 class="mt-4">Post Title</h1>
-        <p class="lead">by <a href="#">{{ post.author }}</a></p>
+        <p class="lead">by <a href="#">{{ post.author.fullName }}</a></p>
         <hr>
 
-        <p>Posted on {{ post.publishedAt|localizeddate('long', 'medium', null, 'UTC') }} by <a href="#">{{ post.author }}</a></p>
+        <p>Posted on {{ post.publishedAt|localizeddate('long', 'medium', null, 'UTC') }} by <a href="#">{{ post.author.fullName }}</a></p>
         <hr>
 
         <img class="img-fluid rounded" src="https://picsum.photos/750/300/?random" alt="">

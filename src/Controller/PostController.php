@@ -4,11 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Post;
 use App\Repository\PostRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class PostController extends Controller
+class PostController extends AbstractController
 {
     /**
      * @Route("/post", defaults={"page": "1"}, methods={"GET"}, name="post_index")
