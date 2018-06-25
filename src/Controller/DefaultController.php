@@ -15,7 +15,7 @@ class DefaultController extends AbstractController
      */
     public function index(int $page, PostRepository $postRepository): Response
     {
-        $posts = $postRepository->findLatest(4, $page);
+        $posts = $postRepository->findLatestPaginated(4, $page);
         $lastPage = $posts->getNbPages();
 
         return $this->render('default/homepage.html.twig', compact('posts', 'page', 'lastPage'));

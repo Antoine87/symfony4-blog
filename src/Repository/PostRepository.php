@@ -17,14 +17,30 @@ class PostRepository extends ServiceEntityRepository
         parent::__construct($registry, Post::class);
     }
 
-    public function findLatest(int $postsPerPage, int $page = 1): Pagerfanta
+    public function findLatestPaginated(int $postsPerPage, int $page = 1): Pagerfanta
     {
-        $query = $this->createQueryBuilder('p')
-            ->where('p.publishedAt <= :now')
-            ->setParameter('now', new \DateTime())
-            ->orderBy('p.publishedAt', 'DESC')
-            ->getQuery();
+        $query = $this->getEntityManager()
+            ->createQuery('
+                SELECT p, a
+                FROM App:Post p
+                LEFT JOIN p.author a
+                WHERE p.publishedAt <= :now
+                ORDER BY p.publishedAt DESC
+            ')
+            ->setParameter('now', new \DateTime());
 
         return $this->createPaginator($query, $postsPerPage, $page);
+    }
+
+    public function findAllWithAuthors()
+    {
+        $query = $this->getEntityManager()
+            ->createQuery('
+                SELECT p, a
+                FROM App:Post p
+                LEFT JOIN p.author a
+            ');
+
+        return $query->getResult();
     }
 }

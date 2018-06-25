@@ -16,7 +16,7 @@ class PostController extends AbstractController
      */
     public function index(int $page, PostRepository $postRepository): Response
     {
-        $posts = $postRepository->findLatest(5, $page);
+        $posts = $postRepository->findLatestPaginated(5, $page);
         $lastPage = $posts->getNbPages();
 
         return $this->render('post/index.html.twig', compact('posts', 'page', 'lastPage'));

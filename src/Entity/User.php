@@ -71,7 +71,7 @@ class User implements UserInterface, \Serializable
      */
     public function getRoles()
     {
-        return ['ROLE_USER'];
+        return $this->login === 'admin' ? ['ROLE_ADMIN'] : ['ROLE_USER']; // TODO roles
     }
 
     /**
