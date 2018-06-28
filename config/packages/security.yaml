@@ -26,6 +26,10 @@ security:
                 username_parameter: _login
                 password_parameter: _password
 
+            logout:
+                path: logout
+                target: homepage
+
             provider: database_users
 
     # Easy way to control access for large sections of your site

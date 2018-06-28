@@ -2,13 +2,18 @@
 
 namespace App\Controller\Admin;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class AdminController extends Controller
+/**
+ * @Route("/admin")
+ * @Security("has_role('ROLE_ADMIN')")
+ */
+class DefaultController extends Controller
 {
     /**
-     * @Route("/admin", name="admin_dashboard")
+     * @Route("/", name="admin_dashboard")
      */
     public function index()
     {
